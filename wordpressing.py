@@ -3,16 +3,17 @@
 from bs4 import BeautifulSoup
 import re
 import urllib.request
-from modules import Exploit
+from modules import Support
+
 
 
 #create the exploit list, to be used later
 my_list = []
 
-my_list.append(Exploit.Exploit('dos', 'Simple DoS Attack', 1)) #only on WordPress 4.5.3
-my_list.append(Exploit.Exploit('xss', 'XSS attack', 1)) #only on WordPress 4.5.3
-my_list.append(Exploit.Exploit('xss+dos', 'XSS with Dos', 1)) #only on WordPress 4.5.3
-my_list.append(Exploit.Exploit('rce', 'WooCommerce RCE', 1)) #only on WooCommerce .... 
+my_list.append(Support.Exploit('dos', 'Simple DoS Attack', 1)) #only on WordPress 4.5.3
+my_list.append(Support.Exploit('xss', 'XSS attack', 1)) #only on WordPress 4.5.3
+my_list.append(Support.Exploit('xss+dos', 'XSS with Dos', 1)) #only on WordPress 4.5.3
+my_list.append(Support.Exploit('rce', 'WooCommerce RCE', 1)) #only on WooCommerce .... 
 
 #print main menu
 print("\n")
@@ -49,8 +50,44 @@ if element is None:
 	print("The target site does not have WooCommerce 3.0.0")
 	my_list[3].executable = 0
 
+#if no checkboxes, stop program
+if not(Support.exploits_possible(my_list)):
+	print("No exploits available")
+	exit()
+
+
 for i in range(len(my_list)): 
 	if my_list[i].executable == 1:
+		print( (i+1), ") ", my_list[i].desc, u'\u2713')
+	else:
 		print( (i+1), ") ", my_list[i].desc)
 
-print("here is your checkmark: " + u'\u2713');
+
+
+#allow the user to select which exploit to execute
+print("\n")
+choice = input("Please choose which available exploit to execute: ")
+
+#control the validity of the inserted choice https://www.google.it
+while not(Support.is_valid_number(choice)) or my_list[int(choice)].executable == 0:
+	if not(Support.is_valid_number(choice)):
+		print("You must insert a number between 1 and 4.")
+		choice = input("Please choose which available exploit to execute: ")
+	else:
+		print("The exploit is not available, make sure the option is checked.")
+		choice = input("Please choose which available exploit to execute: ")
+
+choice_num = int(choice)
+
+
+
+
+
+
+
+
+	
+
+
+
+
