@@ -19,4 +19,4 @@ for i in `seq 1 1000`
       >/dev/null 2>&1 &
 done
    
-rm “$cookiejar"
+rm "$cookiejar"

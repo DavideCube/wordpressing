@@ -13,7 +13,7 @@ class Exploit:
 
 #check if the inserted input is a valid number
 def is_valid_number(var):
-	if (not(var.isdigit()) or int(var) >= 4 or int(var) <= 0):
+	if (not(var.isdigit()) or int(var) > 4 or int(var) <= 0):
 		return False
 	else:
 		return True
